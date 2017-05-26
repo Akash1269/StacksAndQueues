@@ -1,66 +1,83 @@
-//#include<stdio.h>
-//#include<conio.h>
-void initialize(q *ptr)
+#include<stdio.h>
+#include<conio.h>
+#define SIZE 5
+typedef struct node
 {
-    ptr->f=0;
-    ptr->r=-1;
-    ptr->count=0;
+    int data;
+    struct node *next;
+}node;
+
+typedef struct queue
+{
+    node *front;
+    node *rear;
+}queue;
+
+typedef enum{FAIL,SUCCESS}sc;
+
+void initialize(queue *ptr)
+{
+    ptr->front = ptr->rear = NULL;
 }
 
-sc push(q *ptr,int d)
+sc push(queue *ptr,int d)
 {
-    sc flag=SUCCESS;
-    if(((ptr->r)+1)%SIZE==ptr->f&&((ptr->r)!=-1))
+    node *nptr;
+	sc s;
+    nptr=(node *)malloc(sizeof(node));
+    nptr->data=d;
+    nptr->next=NULL;
+    
+    if(ptr->front == NULL){
+    	ptr->front = ptr->rear = nptr;
+	}
+	else{
+		ptr->rear->next = nptr;
+		ptr->rear = nptr;
+	}
+    
+	s=SUCCESS;
+    return s;
+}
+
+sc pop(queue *ptr,int *dptr)
+{
+    sc s=SUCCESS;
+    node *nptr;
+    if(ptr->front==NULL)
     {
-        flag=FAIL;
+        s=FAIL;
     }
     else
     {
-        ptr->r=((ptr->r)+1)%SIZE;
-        ptr->list[ptr->r]=d;
-        (ptr->count)++;
+        nptr=ptr->front;
+        *dptr=nptr->data;
+        ptr->front=nptr->next;
+        free(nptr);
     }
-    return flag;
+    return s;
 }
 
-sc pop(q *ptr,int *dptr)
-{
-    sc flag=SUCCESS;
-    if(ptr->count==0)
-    {
-        flag=FAIL;
-    }
-    else
-    {
-        *dptr=ptr->list[ptr->f];
-        ptr->f=((ptr->f)+1)%SIZE;
-        (ptr->count)--;
-        if(ptr->count==0)
-             initialize(ptr);
-    }
-    return flag;
-}
 
-/*
 main()
 {
     int c,d;
     sc flag;
-    q s;
-    initialize(&s);
+    queue q;
+    initialize(&q);
     abc:printf("enter choice\n1.push\n2.pop\n");
     scanf("%d",&c);
     switch(c)
     {
         case 1:{printf("enter element\n");
                 scanf("%d",&d);
-                flag=push(&s,d);
+                flag=push(&q,d);
                 if(flag==SUCCESS)
                 printf("success\n");
                 else
                 printf("fail\n");
                 break;}
-        case 2:{flag=pop(&s,&d);
+        case 2:{flag=pop(&q,&d);
                 
                 if(flag==SUCCESS)
                 {
@@ -74,4 +91,4 @@ main()
     }
     goto abc;
     getch();
-}*/
+}
